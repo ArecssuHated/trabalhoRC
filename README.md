@@ -1,4 +1,5 @@
-Percebemos que um dos objetivos do projeto não estava sendo cumprido e adicionamos mais alguma slinhas de código no message_router.py
+Percebemos que um dos objetivos do projeto não estava sendo cumprido e adicionamos mais alguma slinhas de código no message_router.pye em peer_connection.py
+ message_router.pye
 # --- BLOCO DE SAÍDA CORRIGIDO (BYE) ---
         if action == "QUIT":
             queue_ui.put({"origin": "SYSTEM", "content": "Enviando pacotes de BYE e encerrando sessoes..."})
@@ -32,3 +33,27 @@ Percebemos que um dos objetivos do projeto não estava sendo cumprido e adiciona
                     conexoes_restabelecidas += 1
             
             queue_ui.put({"origin": "SYSTEM", "content": f"Ciclo de reconexao finalizado. {conexoes_restabelecidas} pares alcancados."})
+
+peer_connection.py
+# Extracao de delta de tempo para inferencia de RTT
+        elif tipo == "PONG":
+            send_time_str = msg.get("timestamp")
+            send_time = datetime.fromisoformat(send_time_str.replace("Z", "+00:00"))
+            agora = datetime.now(timezone.utc)
+            rtt_ms = (agora - send_time).total_seconds() * 1000
+            print(f"\n[SISTEMA_REDE] PONG recebido com latencia (RTT) aferida: {rtt_ms:.2f} ms\n> ", end="", flush=True)
+
+        # --- NOVA REGRA: DESPEDIDA P2P ---
+        elif tipo == "BYE":
+            # Devolve o BYE_OK confirmando que entendeu a saida 
+            resposta_bye_ok = {
+                "type": "BYE_OK", "msg_id": msg.get("msg_id")
+            }
+            self.enviar_mensagem(sock, resposta_bye_ok)
+            
+            # Imprime na tela quem saiu da rede
+            remetente = msg.get("src", "Um peer")
+            print(f"\n[SISTEMA_REDE] {remetente} encerrou a conexao (BYE recebido).\n> ", end="", flush=True)
+            
+        elif tipo == "BYE_OK":
+             print(f"\n[SISTEMA_REDE] BYE_OK recebido. Conexao finalizada com sucesso.\n> ", end="", flush=True)
