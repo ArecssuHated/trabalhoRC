@@ -1,4 +1,4 @@
-Percebemos que um dos objetivos do projeto não estava sendo cumprido e adicionamos mais alguma slinhas de código no message_router.pye em peer_connection.py
+Percebemos que um dos objetivos do projeto não estava sendo cumprido e adicionamos mais algumas linhas de código no message_router.py e em peer_connection.py.
  message_router.pye
 # --- BLOCO DE SAÍDA CORRIGIDO (BYE) ---
         if action == "QUIT":
